@@ -1,0 +1,68 @@
+erDiagram
+  AUTH_USERS ||--|| PROFILES : "id (trigger creates profile)"
+  PROFILES ||--o{ GROUP_MEMBERS : "user_id"
+  GROUPS ||--o{ GROUP_MEMBERS : "group_id"
+  PROFILES |o--o{ GROUPS : "created_by"
+  GROUPS ||--o{ EXPENSES : "group_id"
+  PROFILES ||--o{ EXPENSES : "paid_by"
+  PROFILES |o--o{ EXPENSES : "created_by"
+  EXPENSES ||--|{ EXPENSE_SPLITS : "expense_id"
+  PROFILES ||--o{ EXPENSE_SPLITS : "user_id"
+  GROUPS ||--o{ SETTLEMENTS : "group_id"
+  PROFILES ||--o{ SETTLEMENTS : "from_user"
+  PROFILES ||--o{ SETTLEMENTS : "to_user"
+  PROFILES |o--o{ SETTLEMENTS : "created_by"
+
+  AUTH_USERS {
+    uuid id PK "managed by Supabase Auth"
+    text email
+    jsonb raw_user_meta_data "full_name"
+  }
+  PROFILES {
+    uuid id PK,FK "references auth.users(id) on delete cascade"
+    text email "not null"
+    text full_name "not null, default ''"
+    text role "not null, default 'user', check in (user, admin)"
+    timestamptz created_at
+  }
+  GROUPS {
+    uuid id PK "gen_random_uuid()"
+    text name "1-60 chars"
+    text description "default ''"
+    text currency "default 'EUR'"
+    text invite_code UK "8 chars, random"
+    uuid created_by FK "profiles(id) on delete set null"
+    timestamptz created_at
+  }
+  GROUP_MEMBERS {
+    uuid group_id PK,FK "groups(id) on delete cascade"
+    uuid user_id PK,FK "profiles(id) on delete cascade"
+    text role "owner or member"
+    timestamptz joined_at
+  }
+  EXPENSES {
+    uuid id PK
+    uuid group_id FK "groups(id) on delete cascade"
+    text description "1-100 chars"
+    numeric amount "numeric(12,2), > 0"
+    text category "default 'general'"
+    uuid paid_by FK "profiles(id) on delete cascade"
+    date expense_date
+    uuid created_by FK "profiles(id) on delete set null"
+    timestamptz created_at
+  }
+  EXPENSE_SPLITS {
+    uuid expense_id PK,FK "expenses(id) on delete cascade"
+    uuid user_id PK,FK "profiles(id) on delete cascade"
+    numeric amount "numeric(12,2), >= 0"
+  }
+  SETTLEMENTS {
+    uuid id PK
+    uuid group_id FK "groups(id) on delete cascade"
+    uuid from_user FK "profiles(id)"
+    uuid to_user FK "profiles(id), check from_user <> to_user"
+    numeric amount "numeric(12,2), > 0"
+    text note "default ''"
+    uuid created_by FK "default auth.uid()"
+    timestamptz created_at
+  }
