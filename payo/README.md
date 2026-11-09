@@ -67,7 +67,7 @@ An existing `.env` from the previous version (`REACT_APP_SUPABASE_URL` / `REACT_
    update public.profiles set role = 'admin' where email = 'your@email.com';
    ```
 
-`supabase/verify_schema.sql` contains read-only queries to check that a database matches `schema.sql`.
+`supabase/verify_schema.sql` contains read-only queries to check that a database matches `schema.sql`. Run it in the SQL Editor of the real project to confirm the live database; `npm run test:rls` checks the schema and its policies locally, but not the live project.
 
 ## Commands
 
@@ -80,6 +80,7 @@ An existing `.env` from the previous version (`REACT_APP_SUPABASE_URL` / `REACT_
 | `npm run lint` | ESLint |
 | `npm run typecheck` | TypeScript check |
 | `npm run e2e` | browser tests with a mocked Supabase backend (see `e2e/`) |
+| `npm run test:rls` | 18 database security tests (RLS, roles, RPC functions) on `supabase/schema.sql`, run in PostgreSQL (PGlite); needs no Supabase account |
 
 ## PWA and offline
 
@@ -108,7 +109,7 @@ src/
   components/          providers, auth, dashboard, admin, landing, layout, pwa, ui
   lib/                 TypeScript types, money/balance/summary logic + tests, Supabase client and API
 public/                service worker (sw.js) and icons
-supabase/              schema.sql, verify_schema.sql
+supabase/              schema.sql, verify_schema.sql, tests/rls.test.mjs (database security tests)
 e2e/                   Playwright browser tests + mocked Supabase backend
 docs/                  technical documentation, testing report, migration report, diagrams
 ```

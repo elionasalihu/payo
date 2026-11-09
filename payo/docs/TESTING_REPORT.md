@@ -73,6 +73,8 @@ Environment: Node 22.23.4, npm 10.9.9, dependencies installed with `npm ci` from
 
 ## B. Security and RLS testing (needs the real Supabase project)
 
+**Local database tests.** `npm run test:rls` runs `supabase/schema.sql` unchanged in PostgreSQL (PGlite 0.5.14) with a stand-in for Supabase's roles (`anon`, `authenticated`), `auth.users` and `auth.uid()`, and executes 18 security cases as different users (script: `supabase/tests/rls.test.mjs`). The cases below marked NOT TESTED refer to the **real Supabase project**, which these local tests do not replace.
+
 Use two normal accounts (U1, U2) in different groups and one admin (A). Run the queries in Supabase → SQL Editor with “Run as” the test user, or from a small script using `@supabase/supabase-js` with the anon key while signed in as that user.
 
 | Test case | Input | Expected result | Actual result | Status |
