@@ -40,7 +40,8 @@ Documentation: [`docs/TECHNICAL_DOCUMENTATION.md`](docs/TECHNICAL_DOCUMENTATION.
 
 ```bash
 npm install
-cp .env.example .env.local     # then fill in the two values
+NEXT_PUBLIC_SUPABASE_URL=https://kdscjqpjrvccbyldpqgo.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtkc2NqcXBqcnZjY2J5bGRwcWdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNDcxOTIsImV4cCI6MjEwNzkyMzE5Mn0.wSHZY0B2Br-NtxPVBq5fdM6beNuE9ywDzL2yj_6NfgI
 npm run dev                    # http://localhost:3000
 ```
 
