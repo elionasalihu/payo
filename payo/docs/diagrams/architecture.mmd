@@ -1,0 +1,37 @@
+flowchart LR
+  subgraph Build["next build (Turbopack, TypeScript, Tailwind CSS)"]
+    Static["Prerendered HTML shell per route<br/>+ JS/CSS chunks (/_next/static)"]
+  end
+  subgraph Browser["Browser / installed PWA"]
+    SW["Service worker<br/>public/sw.js"]
+    subgraph Next["Next.js App Router (Client Components)"]
+      Root["app/layout.tsx<br/>fonts, metadata, providers"]
+      Prov["Providers<br/>Pwa · Auth · Toast · Confirm"]
+      Routes["app/**/page.tsx<br/>landing, auth, /client/*, /admin/*"]
+      Guards["RequireAuth / RequireAdmin / GuestOnly<br/>components/auth/RouteGuards.tsx"]
+      WS["WorkspaceProvider / AdminShell<br/>(React Context state)"]
+      Lib["lib/money.ts · balances.ts · summary.ts"]
+      API["lib/supabase/api.ts"]
+      Client["lib/supabase/client.ts<br/>(anon key)"]
+    end
+  end
+  subgraph Supabase["Supabase (hosted)"]
+    Auth["Supabase Auth<br/>(JWT sessions)"]
+    REST["PostgREST API<br/>(tables + RPC)"]
+    subgraph PG["PostgreSQL"]
+      RLS["RLS policies +<br/>SECURITY DEFINER functions"]
+      Tables["profiles · groups · group_members<br/>expenses · expense_splits · settlements"]
+    end
+  end
+  Static -. "served by next start / host" .-> Root
+  SW -. "cached shell when offline" .-> Root
+  Root --> Prov --> Guards --> Routes
+  Routes --> WS --> API
+  WS --> Lib
+  Routes --> Lib
+  Prov --> Client
+  API --> Client
+  Client -- "signUp / signIn / signOut (HTTPS)" --> Auth
+  Client -- "select / delete / rpc() + user JWT (HTTPS)" --> REST
+  REST --> RLS --> Tables
+  Auth -- "trigger on_auth_user_created" --> Tables

@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+/*
+ * Payo design tokens.
+ * Every Tailwind class like `bg-payo-green` or `text-payo-muted` comes from here.
+ */
+@theme {
+  --color-payo-green: #20b86b;
+  --color-payo-green-dark: #159456;
+  --color-payo-green-soft: #eaf8f0;
+  --color-payo-red: #d65c5c;
+  --color-payo-red-soft: #fff0f0;
+
+  --color-payo-ink: #111827;
+  --color-payo-text: #273142;
+  --color-payo-muted: #667085;
+  --color-payo-light: #98a2b3;
+
+  --color-payo-bg: #f8f9f7;
+  --color-payo-border: #e7e9e5;
+  --color-payo-border-soft: #f0f1ef;
+
+  --font-sans: var(--font-manrope), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: var(--font-space-grotesk), sans-serif;
+  --font-jakarta: var(--font-plus-jakarta), sans-serif;
+  --font-mono: var(--font-dm-mono), Menlo, Monaco, Consolas, monospace;
+
+  --animate-payo-pulse: payo-pulse 900ms ease-in-out infinite alternate;
+
+  @keyframes payo-pulse {
+    from {
+      transform: scale(0.7);
+      opacity: 0.5;
+    }
+    to {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    /* The original app's computed body font is Plus Jakarta Sans; dashboards and auth pages use Manrope (font-sans). */
+    @apply bg-payo-bg font-jakarta text-payo-ink antialiased;
+  }
+
+  /* Match the original app: browser-default line height instead of Tailwind's 1.5 */
+  html,
+  body {
+    line-height: normal;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Installed app (display-mode: standalone), e.g. to respect the iPhone notch */
+@custom-variant standalone (@media (display-mode: standalone));
+
+@keyframes payo-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Chevron for <select> elements (form.select in components/ui/classes.ts) */
+@utility bg-select-arrow {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23667085' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
